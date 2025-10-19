@@ -1,0 +1,962 @@
+Skip to content
+You said:
+simple projects for cse students using html and python
+ChatGPT said:
+Here are some simple and practical projects for CSE students using HTML (for frontend) and Python (for backend) 👇
+
+🌐 1. Student Information System
+Tech: HTML, CSS, Flask (Python), SQLite
+Idea:
+A small web app to store and display student details.
+Features:
+
+HTML form to input name, roll number, and branch
+
+Python Flask server to save data in SQLite
+
+Display list of all students
+
+✅ Learning: Form handling, CRUD operations, Flask basics
+
+💬 2. Feedback Form Website
+Tech: HTML, CSS, Python Flask
+Idea:
+A simple feedback system for college events or classes.
+Features:
+
+HTML feedback form
+
+Python backend saves responses
+
+Admin page to view feedback
+
+✅ Learning: Handling POST requests, data storage
+
+🌦️ 3. Weather App
+Tech: HTML, CSS, Python (Flask + API)
+Idea:
+User enters a city, and the app shows current weather using an API.
+Features:
+
+HTML input for city
+
+Python requests OpenWeatherMap API
+
+Display temperature, humidity, and condition
+
+✅ Learning: API integration, JSON parsing
+
+🔐 4. Login and Signup System
+Tech: HTML, CSS, Flask, SQLite
+Idea:
+Basic authentication web app.
+Features:
+
+HTML login/signup forms
+
+Python verifies credentials
+
+Redirects to profile page
+
+✅ Learning: User authentication, sessions, Flask routing
+
+📰 5. News Fetcher
+Tech: HTML, CSS, Flask, Python requests
+Idea:
+Displays latest news headlines from an API.
+Features:
+
+Button to fetch top headlines
+
+Python gets news using NewsAPI
+
+Display list of titles and URLs
+
+✅ Learning: APIs, dynamic data rendering
+
+📊 6. Expense Tracker
+Tech: HTML, CSS, Flask, SQLite
+Idea:
+Track daily expenses with categories.
+Features:
+
+HTML form to enter amount & category
+
+Python backend stores entries
+
+Show monthly totals
+
+✅ Learning: Databases, data visualization basics
+
+💡 7. To-Do List App
+Tech: HTML, CSS, Flask, SQLite
+Idea:
+A simple daily task tracker.
+Features:
+
+Add / delete tasks
+
+Mark tasks as done
+
+Save to database
+
+✅ Learning: CRUD operations, front-end interaction
+
+Would you like me to pick one (like the Weather App or To-Do List) and give you the complete code (HTML + Python + output explanation)?
+
+You said:
+Feedback Form Website
+
+Tech: HTML, CSS, Python Flask
+Idea:
+A simple feedback system for college events or classes.
+Features:
+
+HTML feedback form
+
+Python backend saves responses
+
+Admin page to view feedback
+
+✅ Learning: Handling POST requests, data storage  give the all code 
+ChatGPT said:
+Perfect choice ✅
+Let’s build the Feedback Form Website step-by-step using HTML + CSS + Python (Flask).
+
+This simple project will:
+
+Show a feedback form
+
+Store responses in a local file (or database)
+
+Have an admin page to view all feedback
+
+🧩 Folder Structure
+feedback_app/
+│
+├── app.py
+├── templates/
+│   ├── index.html
+│   └── admin.html
+└── static/
+    └── style.css
+🐍 app.py (Main Python Flask backend)
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+# File to store feedback
+FEEDBACK_FILE = "feedback.txt"
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
+@app.route('/submit', methods=['POST'])
+def submit_feedback():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    feedback = request.form.get('feedback')
+
+    # Save feedback to text file
+    with open(FEEDBACK_FILE, 'a') as f:
+        f.write(f"Name: {name}\nEmail: {email}\nFeedback: {feedback}\n---\n")
+
+    return render_template('index.html', message="✅ Thank you for your feedback!")
+
+
+@app.route('/admin')
+def admin():
+    try:
+        with open(FEEDBACK_FILE, 'r') as f:
+            data = f.read()
+    except FileNotFoundError:
+        data = "No feedback yet."
+
+    return render_template('admin.html', feedback_data=data)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+💬 templates/index.html (Feedback Form Page)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>College Feedback Form</h1>
+
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+
+        <form action="/submit" method="POST">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" required>
+
+            <label>Feedback:</label>
+            <textarea name="feedback" rows="5" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <a href="/admin" class="admin-link">View Feedback (Admin)</a>
+    </div>
+</body>
+</html>
+🧾 templates/admin.html (Admin Feedback View Page)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Feedback Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>All Feedback Entries</h1>
+        <pre class="feedback-box">{{ feedback_data }}</pre>
+        <a href="/">Back to Form</a>
+    </div>
+</body>
+</html>
+🎨 static/style.css (Basic Styling)
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f5f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    width: 400px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.message {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
+
+.admin-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.feedback-box {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+}
+🚀 Run the App
+Open terminal in the project folder
+
+Run:
+
+pip install flask
+python app.py
+Open browser → http://127.0.0.1:5000
+
+✅ Output
+You’ll see a feedback form
+
+After submitting, it shows a thank-you message
+
+Go to /admin to view all saved feedback
+
+Would you like me to upgrade this project to use a SQLite database instead of a text file (so that feedback is stored in a proper table)?
+
+You said:
+give the out put
+ChatGPT said:
+Here’s exactly what the output of your Feedback Form Website will look like when you run it 👇
+
+🏠 1. Home Page — Feedback Form
+📍 URL: http://127.0.0.1:5000/
+
+🖼️ Layout (Text Preview)
+-----------------------------------------
+       College Feedback Form
+-----------------------------------------
+Name: [______________________]
+Email: [______________________]
+Feedback:
+[_________________________________]
+[_________________________________]
+[_________________________________]
+
+[Submit Button]
+
+(View Feedback (Admin))
+-----------------------------------------
+✨ After Submitting:
+✅ Thank you for your feedback!
+Your feedback will be saved inside a file named feedback.txt in your project folder.
+
+Example of saved data:
+
+Name: B Dhanunjaya
+Email: dhanunjaya@gmail.com
+Feedback: The event was well organized!
+---
+🔐 2. Admin Page — View Feedback
+📍 URL: http://127.0.0.1:5000/admin
+
+🖼️ Layout (Text Preview)
+-----------------------------------------
+         All Feedback Entries
+-----------------------------------------
+Name: B Dhanunjaya
+Email: dhanunjaya@gmail.com
+Feedback: The event was well organized!
+---
+Name: Anjali R
+Email: anjali@gmail.com
+Feedback: Great experience and helpful session!
+---
+
+[Back to Form]
+-----------------------------------------
+🎨 3. Styling Preview
+White card in the center with rounded corners
+
+Light gray background
+
+Green “Submit” button that turns darker on hover
+
+Blue “View Feedback” link for admin access
+
+✅ Example Flow
+Open the page
+
+Fill out your name, email, and feedback
+
+Click Submit → shows thank-you message
+
+Visit /admin → see all feedback entries neatly listed
+
+Would you like me to generate a screenshot-style image preview of how the web pages look (form page + admin page)?
+
+You said:
+. Student Information System
+
+Tech: HTML, CSS, Flask (Python), SQLite
+Idea:
+A small web app to store and display student details.
+Features:
+
+HTML form to input name, roll number, and branch
+
+Python Flask server to save data in SQLite
+
+Display list of all students
+
+✅ Learning: Form handling, CRUD operations, Flask basic
+ChatGPT said:
+Excellent choice ✅ — the Student Information System is a great mini-project to learn Flask, HTML, CSS, and SQLite together.
+
+Below is the complete working code for your project with explanation and output preview.
+
+🧩 Folder Structure
+student_info_app/
+│
+├── app.py
+├── students.db         ← (auto-created by Flask)
+├── templates/
+│   ├── index.html
+│   └── students.html
+└── static/
+    └── style.css
+🐍 app.py (Main Python Flask backend)
+from flask import Flask, render_template, request, redirect
+import sqlite3
+
+app = Flask(__name__)
+
+# Create database & table (if not exists)
+def init_db():
+    conn = sqlite3.connect('students.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            roll_no TEXT NOT NULL,
+            branch TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/add', methods=['POST'])
+def add_student():
+    name = request.form.get('name')
+    roll_no = request.form.get('roll_no')
+    branch = request.form.get('branch')
+
+    conn = sqlite3.connect('students.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO students (name, roll_no, branch) VALUES (?, ?, ?)",
+              (name, roll_no, branch))
+    conn.commit()
+    conn.close()
+
+    return redirect('/students')
+
+@app.route('/students')
+def view_students():
+    conn = sqlite3.connect('students.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM students")
+    data = c.fetchall()
+    conn.close()
+
+    return render_template('students.html', students=data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+💻 templates/index.html (Form Page)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Information System</h1>
+        <form action="/add" method="POST">
+            <label>Full Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Roll Number:</label>
+            <input type="text" name="roll_no" required>
+
+            <label>Branch:</label>
+            <input type="text" name="branch" required>
+
+            <button type="submit">Add Student</button>
+        </form>
+
+        <a href="/students" class="view-link">View All Students</a>
+    </div>
+</body>
+</html>
+🧾 templates/students.html (Display All Students)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Students</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Registered Students</h1>
+
+        {% if students %}
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Branch</th>
+                </tr>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s[0] }}</td>
+                    <td>{{ s[1] }}</td>
+                    <td>{{ s[2] }}</td>
+                    <td>{{ s[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No students added yet!</p>
+        {% endif %}
+
+        <a href="/">Back to Form</a>
+    </div>
+</body>
+</html>
+🎨 static/style.css (Styling)
+body {
+    font-family: Arial, sans-serif;
+    background-color: #eef2f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    width: 500px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.view-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #007BFF;
+    text-decoration: none;
+}
+🚀 How to Run
+Open your terminal in the student_info_app folder
+
+Run:
+
+pip install flask
+python app.py
+Open browser → http://127.0.0.1:5000
+
+🖥️ Output Preview
+🏠 Home Page — Add Student
+------------------------------------------
+   Student Information System
+------------------------------------------
+Full Name: [_____________________]
+Roll No:   [_____________________]
+Branch:    [_____________________]
+[Add Student]
+
+(View All Students)
+------------------------------------------
+📋 All Students Page
+------------------------------------------
+       Registered Students
+------------------------------------------
+ID | Name             | Roll No | Branch
+------------------------------------------
+1  | Dhanunjaya B     | 22CS101 | CSE
+2  | Anjali R         | 22CS102 | CSE
+3  | Rahul S          | 22ME105 | MECH
+------------------------------------------
+(Back to Form)
+------------------------------------------
+✅ Learning Outcomes
+
+How to create & use an SQLite database in Flask
+
+Handling HTML form input with POST
+
+Displaying database data dynamically
+
+Basics of CRUD (Create + Read)
+
+Would you like me to extend this project next — for example, add Edit and Delete options for students (complete CRUD system)?
+
+You said:
+python projects for freshers  add in resume 
+ChatGPT said:
+Here’s a list of best Python projects for freshers that you can add to your resume — all simple, practical, and impressive for entry-level jobs or internships 👇
+
+💼 Top Python Projects for Freshers (Resume-Ready)
+🧮 1. Student Information System (Flask + SQLite)
+Tech: Python, Flask, HTML, CSS, SQLite
+Description: A web app to store and manage student details.
+Skills shown: Web development, database handling, CRUD operations.
+Resume line:
+
+Developed a Student Information System using Flask and SQLite to manage student records with create, read, and update functionality.
+
+🌦️ 2. Weather Forecast App
+Tech: Python, API (OpenWeatherMap)
+Description: Displays live weather by fetching data from an external API.
+Skills shown: API integration, JSON parsing, user input handling.
+Resume line:
+
+Built a Weather Forecast Application using Python to fetch real-time weather data through OpenWeatherMap API.
+
+🧾 3. Feedback Form Web App
+Tech: Python (Flask), HTML, CSS
+Description: Web-based feedback system to collect and display user reviews.
+Skills shown: Web form handling, server-side logic, file I/O or database.
+Resume line:
+
+Created a feedback collection web app using Flask and HTML to store and manage user responses.
+
+📋 4. To-Do List Application
+Tech: Python, Flask, SQLite / Tkinter (desktop version)
+Description: Add, delete, and view daily tasks.
+Skills shown: CRUD operations, GUI or web development.
+Resume line:
+
+Developed a To-Do List app with Flask and SQLite enabling users to track and manage daily tasks.
+
+💰 5. Expense Tracker
+Tech: Python, SQLite, Flask or Tkinter
+Description: Tracks income and expenses, showing summaries and balances.
+Skills shown: Data handling, calculations, database interaction.
+Resume line:
+
+Designed an Expense Tracker using Python and SQLite for managing and visualizing daily expenditures.
+
+📰 6. News Headline Fetcher
+Tech: Python, NewsAPI
+Description: Fetches latest news headlines via an API and displays them.
+Skills shown: API handling, data formatting, console or web display.
+Resume line:
+
+Implemented a News Fetcher using Python and NewsAPI to display top headlines dynamically.
+
+🧠 7. AI Chatbot (Basic Version)
+Tech: Python (NLTK / simple rule-based)
+Description: Responds to user queries based on predefined keywords.
+Skills shown: String matching, NLP basics, logic flow.
+Resume line:
+
+Created a rule-based chatbot in Python to simulate interactive Q&A sessions.
+
+🏫 8. Library Management System
+Tech: Python, SQLite
+Description: Manage book records — add, delete, and issue books.
+Skills shown: Database CRUD, CLI or GUI (Tkinter).
+Resume line:
+
+Built a Library Management System using Python and SQLite for storing and tracking book records.
+
+💬 9. Resume Scanner (ATS Score Calculator)
+Tech: Python, NLP (spaCy or regex)
+Description: Parses resume text and scores it against a job description.
+Skills shown: Text parsing, keyword extraction, NLP basics.
+Resume line:
+
+Developed an ATS Resume Scanner using Python and NLP to calculate resume-job match scores.
+
+🎮 10. Simple Games (Fun Projects)
+Examples:
+
+Snake Game 🐍
+
+Rock-Paper-Scissors ✊✋✌️
+
+Number Guessing Game 🎯
+Tech: Python
+Skills shown: Loops, conditionals, logic building.
+Resume line:
+
+Created interactive mini-games using Python to strengthen logic and algorithmic thinking.
+
+🧾 Bonus Tips for Resume
+When adding projects:
+✅ Keep 2–3 best projects only.
+✅ Add GitHub link or portfolio if possible.
+✅ Format like this:
+
+Project: Student Information System
+Tech Stack: Python, Flask, SQLite, HTML, CSS
+Description: A web app to manage student data with CRUD functionality.
+GitHub: github.com/username/student-info-system
+Would you like me to suggest the top 3 projects (from this list) that will look most impressive on your resume for placements or internships — and tell you which one to start with first?
+
+You said:
+9. Resume Scanner (ATS Score Calculator)
+
+Tech: Python, NLP (spaCy or regex)
+Description: Parses resume text and scores it against a job description.
+Skills shown: Text parsing, keyword extraction, NLP basics.   give the all code
+ChatGPT said:
+Perfect 👏 — The Resume Scanner (ATS Score Calculator) is an impressive project to add to your resume, especially for CSE freshers or Python developers.
+
+It uses Python + NLP to compare a resume with a job description, calculate a match score (ATS Score), and show missing keywords — just like real ATS systems used by recruiters.
+
+🧩 Folder Structure
+resume_scanner/
+│
+├── app.py
+├── resume.txt
+├── job_description.txt
+└── requirements.txt
+🐍 Step 1: app.py — Main Python Code
+import re
+
+def clean_text(text):
+    """Remove special characters and convert to lowercase."""
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    return text.lower()
+
+def extract_keywords(text):
+    """Split text into individual words."""
+    words = text.split()
+    return set(words)
+
+def calculate_ats_score(resume_text, jd_text):
+    """Calculate keyword match percentage between resume and job description."""
+    resume_clean = clean_text(resume_text)
+    jd_clean = clean_text(jd_text)
+
+    resume_keywords = extract_keywords(resume_clean)
+    jd_keywords = extract_keywords(jd_clean)
+
+    matched_keywords = resume_keywords.intersection(jd_keywords)
+    missing_keywords = jd_keywords.difference(resume_keywords)
+
+    match_score = (len(matched_keywords) / len(jd_keywords)) * 100 if jd_keywords else 0
+
+    return match_score, matched_keywords, missing_keywords
+
+
+# ---------------- Main Program ---------------- #
+if __name__ == "__main__":
+    # Read resume and job description files
+    with open("resume.txt", "r", encoding="utf-8") as file:
+        resume_text = file.read()
+
+    with open("job_description.txt", "r", encoding="utf-8") as file:
+        jd_text = file.read()
+
+    score, matched, missing = calculate_ats_score(resume_text, jd_text)
+
+    print("\n=============================")
+    print("📄 ATS Resume Match Report")
+    print("=============================")
+    print(f"✅ Match Score: {score:.2f}%")
+    print(f"\n✅ Matched Keywords ({len(matched)}):")
+    print(", ".join(list(matched)[:30]))  # show top 30
+
+    print(f"\n❌ Missing Keywords ({len(missing)}):")
+    print(", ".join(list(missing)[:30]))  # show top 30
+    print("\n=============================")
+🧾 Step 2: Create resume.txt
+Paste your resume text or key skills in a text file, for example:
+
+B Dhanunjaya
+Python Developer | CSE Student
+
+Skills: Python, Flask, HTML, CSS, SQLite, API Integration, Data Analysis
+
+Projects: Student Information System, Feedback Form App, Weather App
+
+Experience: Internship in Web Development
+🧾 Step 3: Create job_description.txt
+Paste a sample job description, for example:
+
+Looking for a Python Developer skilled in Flask, HTML, CSS, and API Integration.
+Should understand SQL databases and have experience building web applications.
+Knowledge of data analysis and version control (GitHub) is a plus.
+⚙️ Step 4: requirements.txt (Optional)
+re
+(You don’t need external libraries for this simple version.)
+
+▶️ Step 5: Run the Program
+Open your terminal or VS Code and run:
+
+python app.py
+🖥️ Sample Output
+=============================
+📄 ATS Resume Match Report
+=============================
+✅ Match Score: 68.75%
+
+✅ Matched Keywords (11):
+flask, css, python, html, api, integration, databases, analysis, web, applications, developer
+
+❌ Missing Keywords (5):
+github, version, control, knowledge, plus
+=============================
+💡 How It Works
+Reads both resume.txt and job_description.txt
+
+Cleans text (removes punctuation, converts to lowercase)
+
+Splits into individual words
+
+Compares words between the two files
+
+Calculates the percentage of overlap (ATS Score)
+
+Displays matched and missing keywords
+
+🚀 Optional: Upgrade Ideas
+If you want to make this project more advanced:
+
+Use spaCy for smarter keyword extraction (nouns, verbs only).
+
+Build a Flask web interface to upload resumes & JD files.
+
+Display results on a web page.
+
+Save scores to a database for analytics.
+
+Would you like me to upgrade this project into a Flask web app version (where you upload a resume & job description through HTML, and it shows ATS score on the web page)?
+
+You said:
+FileNotFoundError: [Errno 2] No such file or directory: 'resume.txt'
+PS C:\Users\bdhan\OneDrive\Pictures\Desktop\projects> & "C:/Program Files/Python312/python.exe" "c:/Users/bdhan/OneDrive/Pictures/Desktop/projects/ATS Score Calculator/mani code.py"
+Traceback (most recent call last):
+  File "c:\Users\bdhan\OneDrive\Pictures\Desktop\projects\ATS Score Calculator\mani code.py", line 32, in <module>
+    with open("resume.txt", "r", encoding="utf-8") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'resume.txt'
+PS C:\Users\bdhan\OneDrive\Pictures\Desktop\projects>   how to slove
+ChatGPT said:
+Good question 👍 — this is a common beginner error and easy to fix.
+
+Your error says:
+
+FileNotFoundError: [Errno 2] No such file or directory: 'resume.txt'
+That means Python can’t find the file resume.txt in the same folder where you are running the program.
+
+🪄 Here’s how to fix it step by step
+✅ Option 1: Keep the files in the same folder as your .py file
+Make sure your folder looks like this:
+
+ATS Score Calculator/
+│
+├── mani code.py
+├── resume.txt
+└── job_description.txt
+Then run the code from that same folder.
+
+How to check you’re in the right folder:
+In PowerShell:
+
+cd "C:\Users\bdhan\OneDrive\Pictures\Desktop\projects\ATS Score Calculator"
+python "mani code.py"
+✅ Option 2: Give the full file path in code
+If you don’t want to move files, you can tell Python exactly where they are:
+
+Example 👇
+
+resume_path = r"C:\Users\bdhan\OneDrive\Pictures\Desktop\projects\ATS Score Calculator\resume.txt"
+jd_path = r"C:\Users\bdhan\OneDrive\Pictures\Desktop\projects\ATS Score Calculator\job_description.txt"
+
+with open(resume_path, "r", encoding="utf-8") as file:
+    resume_text = file.read()
+
+with open(jd_path, "r", encoding="utf-8") as file:
+    jd_text = file.read()
+That way Python always knows the exact location.
+
+✅ Option 3: Create the missing files
+If you haven’t made them yet, create two new files in the same folder:
+
+resume.txt
+
+job_description.txt
+
+Add some text inside (like your resume and a sample job description).
+
+⚡ Quick Test
+After you fix it, try:
+
+python mani code.py
+If your folder setup is correct, it will print your ATS score report on the screen ✅
+
+Would you like me to modify your script slightly so it asks for file paths interactively (so you can just paste file locations instead of hardcoding)?
+
+
+
+
+No file chosenNo file chosen
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.

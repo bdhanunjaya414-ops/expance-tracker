@@ -1,0 +1,103 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from tkinter import *
+from tkinter import messagebox
+
+# CSV file to store patient data
+data_file = 'patients_data.csv'
+
+# Create dataset if it doesn't exist
+try:
+    df = pd.read_csv(data_file)
+except FileNotFoundError:
+    df = pd.DataFrame(columns=['Name', 'Age', 'Gender', 'Fever', 'Cough', 'Fatigue', 'Headache', 'Disease'])
+    df.to_csv(data_file, index=False)
+
+# Sample training data
+train_data = pd.DataFrame({
+    'Age': [25, 60, 45, 30],
+    'Gender': [0, 1, 0, 1],
+    'Fever': [1,0,1,1],
+    'Cough': [0,1,1,0],
+    'Fatigue': [1,1,0,1],
+    'Headache': [1,0,1,0],
+    'Disease': ['Flu', 'Cold', 'COVID', 'Flu']
+})
+
+X_train = train_data[['Age', 'Gender', 'Fever', 'Cough', 'Fatigue', 'Headache']]
+y_train = train_data['Disease']
+
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+# GUI
+root = Tk()
+root.title("Disease Prediction System")
+root.geometry("500x600")
+root.configure(bg="#e0f7fa")
+
+Label(root, text="Disease Prediction System", font=("Helvetica", 18, "bold"), bg="#006064", fg="white", pady=10).pack(fill=X)
+
+# Input fields
+Label(root, text="Patient Name:", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=80)
+name_entry = Entry(root)
+name_entry.place(x=200, y=80)
+
+Label(root, text="Age:", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=120)
+age_entry = Entry(root)
+age_entry.place(x=200, y=120)
+
+Label(root, text="Gender (M=0, F=1):", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=160)
+gender_entry = Entry(root)
+gender_entry.place(x=200, y=160)
+
+Label(root, text="Fever (0/1):", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=200)
+fever_entry = Entry(root)
+fever_entry.place(x=200, y=200)
+
+Label(root, text="Cough (0/1):", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=240)
+cough_entry = Entry(root)
+cough_entry.place(x=200, y=240)
+
+Label(root, text="Fatigue (0/1):", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=280)
+fatigue_entry = Entry(root)
+fatigue_entry.place(x=200, y=280)
+
+Label(root, text="Headache (0/1):", bg="#e0f7fa", font=("Helvetica", 12)).place(x=50, y=320)
+headache_entry = Entry(root)
+headache_entry.place(x=200, y=320)
+
+# Prediction function
+def predict_disease():
+    try:
+        patient_name = name_entry.get()
+        if not patient_name:
+            messagebox.showerror("Error", "Please enter the patient's name.")
+            return
+
+        patient = pd.DataFrame({
+            'Age': [int(age_entry.get())],
+            'Gender': [int(gender_entry.get())],
+            'Fever': [int(fever_entry.get())],
+            'Cough': [int(cough_entry.get())],
+            'Fatigue': [int(fatigue_entry.get())],
+            'Headache': [int(headache_entry.get())]
+        })
+
+        prediction = model.predict(patient)[0]
+
+        # Save patient data
+        patient['Name'] = patient_name
+        patient['Disease'] = prediction
+        df = pd.read_csv(data_file)
+        df = pd.concat([df, patient[['Name','Age','Gender','Fever','Cough','Fatigue','Headache','Disease']]], ignore_index=True)
+        df.to_csv(data_file, index=False)
+
+        messagebox.showinfo("Prediction Result", f"Patient: {patient_name}\nPredicted Disease: {prediction}")
+    except Exception as e:
+        messagebox.showerror("Error", "Please enter valid input! "+str(e))
+
+# Predict button
+Button(root, text="Predict Disease", bg="#00796b", fg="white", font=("Helvetica", 14), command=predict_disease).place(x=150, y=400)
+
+root.mainloop()
